@@ -5,19 +5,15 @@ public class Main {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		
-		int num = sc.nextInt();
+		int len = sc.nextInt();
 		int x = sc.nextInt();
 		
-		int[] intArr = new int[num];
-		for(int i = 0; i < num; i++) {
-			intArr[i] = sc.nextInt();
-			if(intArr[i] < x) {
-				System.out.print(intArr[i] + " ");
+		for(int i = 0; i < len; i++) {
+			int num = sc.nextInt();
+			if(num < x) {
+				System.out.print(num + " ");
 			}
 		}
 		sc.close();
 	}
-	
-	
-
 }
