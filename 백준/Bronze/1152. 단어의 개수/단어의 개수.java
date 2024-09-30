@@ -1,14 +1,27 @@
-import java.util.Scanner;
+import java.io.*;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        String[] str = sc.nextLine().trim().split(" ");
-
-        if(str[0].equals("")){
-            System.out.println(0);
-        }else{
-            System.out.println(str.length);
+        
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        
+        try{
+           String words[] = br.readLine().trim().split(" ");
+           br.close();
+           
+           if(words[0].equals("")){
+               bw.write("0");
+           } else{
+             bw.write(String.valueOf(words.length));  
+           }
+            
+           bw.flush();
+           bw.close();
+        }catch(Exception e){
+            e.printStackTrace();
         }
+           
+        
     }
 }
