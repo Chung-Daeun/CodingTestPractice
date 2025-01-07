@@ -41,7 +41,7 @@ public class Main {
 			sharks.sort((o1, o2) -> o1.r - o2.r); // 정렬
 		}
 		
-		System.out.println(weight + "올해는 꼭 해결하리");
+		System.out.println(weight);
 		
 		sc.close();
 	}
