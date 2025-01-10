@@ -1,4 +1,3 @@
-큰일 났네 아무것도 안하고싶다
 package shark;
 
 import java.util.Collections;
