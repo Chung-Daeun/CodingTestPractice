@@ -1,5 +1,5 @@
 package shark;
-
+내일부터 꼭 매일 잔디를 심으리라
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
