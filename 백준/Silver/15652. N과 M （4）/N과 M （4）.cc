@@ -20,16 +20,16 @@ void rec_func(int k) {
             cout << v[i] << " ";
         }
         cout << "\n";
-    } else {
-        // 골라보자
-        for (int i = 1; i <= N; i++) {
-            if (i < v[k - 1]) {
-                continue;
-            }
+        return;
+    }
 
-            v[k] = i;
-            rec_func(k + 1);
-        }
+    int start = 0;
+    k == 0 ? start = 1 : start = v[k - 1];
+
+    for (int i = start; i <= N; i++) {
+        v[k] = i;
+        rec_func(k + 1);
+        v[k] = 0;
     }
 }
 
