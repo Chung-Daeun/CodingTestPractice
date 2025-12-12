@@ -27,24 +27,21 @@ void input() {
     }
 }
 
-int sum(int a, int b) {
-    return a + numV[b];
-}
-
-int sub(int a, int b) {
-    return a - numV[b];
-}
-
-int mul(int a, int b) {
-    return a * numV[b];
-}
-
-int di(int a, int b) {
-    if (a < 0) {
-        return (-1) * ((-1 * a) / numV[b]);
+// 계산 함수
+int calc(int operand1, int oper, int operand2) {
+    switch(oper) {
+        case 0:
+            return operand1 + operand2;
+        case 1:
+            return operand1 - operand2;
+        case 2:
+            return operand1 * operand2;
+        case 3:
+            if (operand1 < 0) {
+                return -1 * ((-1 * operand1) / operand2);
+            }
+            return operand1 / operand2;
     }
-
-    return a / numV[b];
 }
 
 void rec_func(int k, int ans) {
@@ -69,20 +66,7 @@ void rec_func(int k, int ans) {
 
         // 연산 후 다음단계 이동
         oper[i]--;
-        switch(i) {
-            case 0:
-                rec_func(k + 1, sum(ans, k));
-                break;
-            case 1:
-                rec_func(k + 1, sub(ans, k));
-                break;
-            case 2:
-                rec_func(k + 1, mul(ans, k));
-                break;
-            case 3:
-                rec_func(k + 1, di(ans, k));
-                break;
-        }
+        rec_func(k + 1, calc(ans, i, numV[k]));
 
         // 연산자 변경
         oper[i]++;
