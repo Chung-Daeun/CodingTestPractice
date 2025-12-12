@@ -28,14 +28,10 @@ void rec_func(int k, int ans) {
         return;
     }
 
-    // 고를지 말지 선택
-    for (int cand = 0; cand <= 1; cand++) {
-        // 고르면 ans에 값 더하기
-        if (cand) {
-            ans += nums[k];
-        }
-        rec_func(k + 1, ans);
-    }
+    // 안고름
+    rec_func(k + 1, ans);
+    // 고름
+    rec_func(k + 1, ans + nums[k]);
 }
 
 int main() {
