@@ -1,35 +1,50 @@
 #include <iostream>
-#include <string>
 #include <algorithm>
+
 using namespace std;
 
-bool compare(string &str1, string &str2){
-   if(str1.length() != str2.length()){
-      return str1.length() < str2.length();
-   } else {
-      return str1 < str2;
-   }
+// 필요 변수 선언
+int N;
+string str[200005];
+
+// 입력
+void input() {
+    cin >> N;
+    
+    for (int i = 1; i <= N; i++) {
+        cin >> str[i];
+    }
+}
+
+// 실행
+void pro() {
+    sort(str + 1, str + 1 + N, [](const string &str1, const string &str2) {
+        if (str1.size() != str2.size()) return str1.size() < str2.size();
+        return str1 < str2;
+    });
+}
+
+// 출력
+void print() {
+    for (int i = 1; i <= N; i++) {
+        if (str[i] == str[i - 1]) continue;
+        cout << str[i] << "\n";
+    }
 }
 
 int main() {
-   int n;
-   cin >> n;
+    // 최적화
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
 
-   string arr[n];
+    // 입력
+    input();
 
-   for(int i = 0; i < n; i++){
-      cin >> arr[i];
-   }
+    // 실행
+    pro();
 
-   sort(arr, arr + n, compare);
-
-   for(int i = 0; i < n; i++){
-      if(i > 0 && arr[i] == arr[i - 1]){ 
-         continue;
-      }
-
-      cout << arr[i] << endl;
-   }
-
-   
+    // 출력
+    print();
+    return 0;
 }
