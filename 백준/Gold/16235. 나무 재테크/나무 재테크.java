@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
@@ -15,8 +14,7 @@ public class Main {
     // 필요변수
     static int N, M, K;    // N: 밭의 크기, M: 나무의 수, K: 년도
     static int[][] A = new int[15][15];    //  추가되는 비료
-    static Deque<Tree>[][] trees = new Deque[15][15];  // 나무
-    static int[][] field = new int[15][15];
+    static Cell[][] field = new Cell[15][15];   // 밭(양분+나무)
 
     // main
     public static void main(String[] args) throws Exception{
@@ -35,13 +33,12 @@ public class Main {
         M = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
 
-        // 비료 양 입력 + 초기 비료 양 저장 + deque선언
+        // 비료 양 입력 + Cell 선언
         for (int r = 1; r <= N; r++) {
-            Arrays.fill(field[r], 5);
             st = new StringTokenizer(br.readLine());
             for (int c = 1; c <= N; c++) {
                 A[r][c] = Integer.parseInt(st.nextToken());
-                // trees[r][c] = new ArrayDeque<>();
+                field[r][c] = new Cell();
             }
         }
 
@@ -59,16 +56,9 @@ public class Main {
         // 정렬
         Collections.sort(treeList, (a, b) -> a[2] - b[2]);
 
-        // 나무 deque 초기화
-        for (int r = 0; r <= N+1; r++) {
-            for (int c = 0; c <= N+1; c++) {
-                trees[r][c] = new ArrayDeque<>();
-            }
-        }
-
         // deque에 옮기기
         for (int i = 0; i < M; i++) {
-            trees[treeList.get(i)[0]][treeList.get(i)[1]].addLast(new Tree(treeList.get(i)[2]));
+            field[treeList.get(i)[0]][treeList.get(i)[1]].trees.addLast(treeList.get(i)[2]);
         }
 
         // 리스트 삭제
@@ -80,82 +70,82 @@ public class Main {
     // 실행
     private static void pro() {
         while (K-- > 0) {
-            spring();
-            summer();
-            fall();
-            winter();
+            eatFoodAndDead();
+            birthTree();
         }
     }
 
-    // 봄
-    private static void spring() {
+    // 봄+여름+겨울
+    private static void eatFoodAndDead() {
+        // 한칸씩 실행
         for (int r = 1; r <= N; r++) {
             for (int c = 1; c <= N; c++) {
-                // 비었으면 넘어가기
-                if (trees[r][c].isEmpty())  continue;
+                // 나무가 있으면
+                if (!field[r][c].trees.isEmpty()) {
+                    // 양분을 먹은 나무
+                    Deque<Integer> liveTrees = new ArrayDeque<>();
 
-                for (Tree tree: trees[r][c]) {
-                    // 양분 부족
-                    if (field[r][c] < tree.age) {
-                        tree.noFood();
-                        continue;
+                    // 죽은 나무가 양분이 되는 양
+                    int deadTrees = 0;
+
+                    for (int tree : field[r][c].trees) {
+                        if (field[r][c].nri >= tree) {  // 양분을 먹는 경우
+                            field[r][c].feedTree(tree);
+                            liveTrees.addLast(++tree);
+                        } else {    // 양분을 못 먹는 경우
+                            deadTrees += tree / 2;
+                        }
                     }
-                    // 양분 섭취
-                    field[r][c] -= tree.age;
-                    tree.eatFood();
-                    tree.growTree();
+
+                    // 새나무 조합으로 교체
+                    field[r][c].changeTrees(liveTrees);
+
+                    // 죽은나무 양분으로 추가
+                    field[r][c].addNri(deadTrees);
                 }
+
+                // 겨울 양분 추가
+                field[r][c].addNri(A[r][c]);
             }
         }
     }
-    // 여름
-    private static void summer() {
-        for (int r = 1; r <= N; r++) {
-            for (int c = 1; c <= N; c++) {
-                while (!trees[r][c].isEmpty() && !trees[r][c].peekLast().isEat) {
-                    field[r][c] += trees[r][c].pollLast().age / 2;
-                }
-            }
-        }
-    }
+
     // 가을
-    private static void fall() {
+    private static void birthTree() {
+        int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
+
         for (int r = 1; r <= N; r++) {
             for (int c = 1; c <= N; c++) {
-                // 비었으면 스킵
-                if (trees[r][c].isEmpty())  continue;
+                // 나무 없으면 스킵
+                if (field[r][c].trees.isEmpty())    continue;
 
-                for (Tree tree : trees[r][c]) {
-                    if (tree.age % 5 == 0) {
-                        trees[r - 1][c - 1].addFirst(new Tree(1));
-                        trees[r - 1][c].addFirst(new Tree(1));
-                        trees[r - 1][c + 1].addFirst(new Tree(1));
-                        trees[r][c - 1].addFirst(new Tree(1));
-                        trees[r][c + 1].addFirst(new Tree(1));
-                        trees[r + 1][c - 1].addFirst(new Tree(1));
-                        trees[r + 1][c].addFirst(new Tree(1));
-                        trees[r + 1][c + 1].addFirst(new Tree(1));
+                for (int tree : field[r][c].trees) {
+                    // 나이가 5의 배수면 번식
+                    if (tree % 5 == 0) {
+                        int nr, nc;
+                        for (int i = 0; i < 8; i++) {
+                            nr = r + dr[i];
+                            nc = c + dc[i]; 
+
+                            // 밭 밖에는 나무가 나지 않는다
+                            if (nr < 1 || nr > N || nc < 1 || nc > N)   continue;
+
+                            field[nr][nc].newTree();
+                        }
                     }
                 }
             }
         }
     }
-    // 겨울
-    private static void winter() {
-        for (int r = 1; r <= N; r++) {
-            for (int c = 1; c <= N; c++) {
-                field[r][c] += A[r][c];
-            }
-        }
-    }
-
+    
     // 출력
     private static void print() throws IOException {
         int cnt = 0;
 
         for (int r = 1; r <= N; r++) {
             for (int c = 1; c <= N; c++) {
-                cnt += trees[r][c].size();
+                cnt += field[r][c].trees.size();
             }
         }
 
@@ -166,28 +156,26 @@ public class Main {
     }
 
     // nest class
-    private static class Tree {
-        private int age;
-        private boolean isEat;
+    private static class Cell {
+        private int nri = 5;
+        private Deque<Integer> trees = new ArrayDeque<>();
 
-        // 생성자
-        Tree(int age) {
-            this.age = age;
+
+        void addNri(int num) {
+            this.nri += num;
         }
 
-        // 나무 나이 먹음
-        void growTree() {
-            this.age++;
+        void newTree() {
+            this.trees.addFirst(1);
         }
 
-        // 나무 비료 먹음
-        void eatFood() {
-            this.isEat = true;
+        void feedTree(int num) {
+            this.nri -= num;
         }
 
-        // 비료 부족
-        void noFood() {
-            this.isEat = false;
+        void changeTrees(Deque<Integer> newTrees) {
+            this.trees = newTrees;
         }
+
     }
 }
