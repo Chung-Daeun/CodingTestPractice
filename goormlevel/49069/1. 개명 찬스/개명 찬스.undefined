@@ -1,0 +1,32 @@
+import java.io.*;
+import java.util.*;
+
+class Main {
+	static String name;
+	static String best;
+
+	static void newName() {
+		boolean isFind = false;
+		for (int i = 0; i < name.length() - 1; i++) {
+			if (name.charAt(i) > name.charAt(i + 1)) {
+				isFind = true;
+				best = name.substring(0, i) + name.substring(i + 1, name.length());
+				break;
+			}
+		}
+
+		if (!isFind) {
+			best = name.substring(0, name.length() - 1);
+		}
+	}
+	
+	public static void main(String[] args) throws Exception {
+		// 입력
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		name = br.readLine();
+
+		// 실행
+		newName();
+		System.out.println(best);
+	}
+}
