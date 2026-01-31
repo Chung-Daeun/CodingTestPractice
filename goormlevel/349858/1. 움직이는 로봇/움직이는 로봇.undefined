@@ -1,0 +1,53 @@
+import java.io.*;
+import java.util.*;
+
+class Main {
+	// 변수 선언
+	static int N, M, p, q;
+	static long t;
+	static StringBuilder sb = new StringBuilder();
+
+	static void moveRobot() {
+		int dr = 1;    // 세로
+		int dc = 1;    // 가로
+		
+		while (t-- > 0) {
+			q += dr;
+			p += dc;
+
+			if (q == 0 || q == M) {
+				dr *= -1;
+			}
+
+			if (p == 0 || p == N) {
+				dc *= -1;
+			}
+
+		}
+	}
+
+	
+	public static void main(String[] args) throws Exception {
+		// 입력
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		st = new StringTokenizer(br.readLine());
+		p = Integer.parseInt(st.nextToken());
+		q = Integer.parseInt(st.nextToken());
+
+		t = Long.parseLong(br.readLine());
+		
+		br.close();
+
+		// 실행
+		moveRobot();
+		sb.append(p).append(" ").append(q);
+
+		// 출력
+		System.out.println(sb.toString());
+	}
+}
