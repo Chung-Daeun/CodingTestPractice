@@ -18,7 +18,7 @@ void input() {
 void pro() {
     int minSub = A[N - 1] - A[0];
 
-    for (int left = 0, right = 1; left < N - 1; left++) {
+    for (int left = 0, right = 0; left < N - 1; left++) {
         while (right < N && A[right] - A[left] < M) {
             right++;
         }
