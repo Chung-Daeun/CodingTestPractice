@@ -21,17 +21,16 @@ class Main {
         br.close();
     }
 
-    static void dfs(int r, int c) {
+    static final int[] dr = {-1, 0, 0, 1};
+    static final int[] dc = {0, -1, 1, 0};
 
+    static int dfs(int r, int c) {
         // 이미 방문했던 곳이면 패스
-        if (visited[r][c])  return;
+        if (visited[r][c])  return 0;
 
         // 최초값 넣기
         visited[r][c] = true;
-        cnt++;
-
-        int[] dr = {-1, 0, 0, 1};
-        int[] dc = {0, -1, 1, 0};
+        int cnt = 1;
 
         // 상하좌우 확인
         for (int i = 0; i < 4; i++) {
@@ -43,13 +42,13 @@ class Main {
 
             // 집인경우
             if (map[nr].charAt(nc) == '1') {
-                dfs(nr, nc);
+                cnt += dfs(nr, nc);
             }
         }
 
+        return cnt;
     }
 
-    static int cnt;
     static void pro() {
         visited = new boolean[N][N];
         
@@ -57,9 +56,7 @@ class Main {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (!visited[i][j] && map[i].charAt(j) == '1') {
-                    cnt = 0;
-                    dfs(i, j);
-                    group.add(cnt);
+                    group.add(dfs(i, j));
                 }
             }
         }
