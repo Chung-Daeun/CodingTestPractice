@@ -8,15 +8,6 @@ class Main {
     static List<Integer> group = new ArrayList<>();
     static boolean[][] visited;
 
-    static class Pair {
-        int r, c;
-
-        Pair (int r, int c) {
-            this.r = r;
-            this.c = c;
-        }
-    }
-
     // 입력
     static void input() throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -30,45 +21,35 @@ class Main {
         br.close();
     }
 
-    static void findGroup(int r, int c) {
-        Deque<Pair> bfsQue = new ArrayDeque<>();
+    static void dfs(int r, int c) {
+
+        // 이미 방문했던 곳이면 패스
+        if (visited[r][c])  return;
 
         // 최초값 넣기
-        bfsQue.addLast(new Pair(r, c));
         visited[r][c] = true;
-        int cnt = 1;
+        cnt++;
 
         int[] dr = {-1, 0, 0, 1};
         int[] dc = {0, -1, 1, 0};
 
-        while (!bfsQue.isEmpty()) {
-            Pair nowhome = bfsQue.pollFirst();
+        // 상하좌우 확인
+        for (int i = 0; i < 4; i++) {
+            int nr = dr[i] + r;
+            int nc = dc[i] + c;
 
-            // 상하좌우 확인
-            for (int i = 0; i < 4; i++) {
-                int nr = dr[i] + nowhome.r;
-                int nc = dc[i] + nowhome.c;
+            // 경계 밖 값의 경우 넘어가기 
+            if (nr < 0 || nr >= N || nc < 0 || nc >= N) continue;
 
-                // 경계 밖 값의 경우 넘어가기 
-                if (nr < 0 || nr >= N || nc < 0 || nc >= N) continue;
-
-                // 방문여부 체크
-                if (!visited[nr][nc]) {
-                    visited[nr][nc] = true;
-
-                    // 집 유무 체크
-                    if (map[nr].charAt(nc) == '1') {
-                        cnt++;
-                        bfsQue.addLast(new Pair(nr, nc));
-                    }
-                }
+            // 집인경우
+            if (map[nr].charAt(nc) == '1') {
+                dfs(nr, nc);
             }
         }
 
-        // 단지 저장
-        group.add(cnt);
     }
 
+    static int cnt;
     static void pro() {
         visited = new boolean[N][N];
         
@@ -76,7 +57,9 @@ class Main {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (!visited[i][j] && map[i].charAt(j) == '1') {
-                    findGroup(i, j);
+                    cnt = 0;
+                    dfs(i, j);
+                    group.add(cnt);
                 }
             }
         }
