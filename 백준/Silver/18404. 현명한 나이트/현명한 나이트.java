@@ -34,9 +34,7 @@ class Main {
     static void pro() {
         StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < M; i++) {
-            bfs();
-        }
+        bfs();
 
         for (int i = 0; i < M; i++) {
             sb.append(dist[enemyArr[i][0]][enemyArr[i][1]]).append(" ");
