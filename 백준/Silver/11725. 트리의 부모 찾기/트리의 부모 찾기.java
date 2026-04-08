@@ -2,65 +2,67 @@ import java.io.*;
 import java.util.*;
 
 class Main {
-    
     static int N;
-    static List<Integer>[] tree;
-    static int[] parents;
-
-    static void input() throws IOException {
+    static List<Integer>[] adjLists;
+    static int[] ans;
+    
+    static void input() throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+        
         N = Integer.parseInt(br.readLine());
-        tree = new List[N + 1];
+
+        // 배열 크기 선언
+        adjLists = new List[N + 1];
         for (int i = 1; i <= N; i++) {
-            tree[i] = new ArrayList<Integer>();
+            adjLists[i] = new ArrayList<>();
         }
 
+        ans = new int[N + 1];
+
+        // 연결정보 저장하기
         for (int i = 0; i < N - 1; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
 
-            int x = Integer.parseInt(st.nextToken());
-            int y = Integer.parseInt(st.nextToken());
-
-            tree[x].add(y);
-            tree[y].add(x);
+            adjLists[a].add(b);
+            adjLists[b].add(a);
         }
 
         br.close();
     }
 
-    static void bfs() {
+    static void BFS() {
         Deque<Integer> bfsQue = new ArrayDeque<>();
 
+        // 부모노드부터 시작
         bfsQue.addLast(1);
-        parents[1] = -1;
 
         while (!bfsQue.isEmpty()) {
             int current = bfsQue.pollFirst();
 
-            for (int num : tree[current]) {
-                // 부모가 없는 노드만 부모 추가
-                if (parents[num] == 0) {
-                    parents[num] = current;
+            for (int num : adjLists[current]) {
+                if (ans[num] == 0) {
+                    ans[num] = current;
                     bfsQue.addLast(num);
                 }
             }
         }
     }
 
-    static void pro() {
-        parents = new int[N + 1];
-        bfs();
+    static void print() {
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 2; i <= N; i++) {
-            System.out.println(parents[i]);
+            sb.append(ans[i]).append("\n");
         }
 
-        
+        System.out.println(sb.toString());
     }
 
     public static void main(String[] args) throws Exception {
         input();
-        pro();
+        BFS();
+        print();
     }
 }
